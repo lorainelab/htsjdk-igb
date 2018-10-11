@@ -27,7 +27,6 @@ package htsjdk.samtools;
 import htsjdk.samtools.cram.ref.CRAMReferenceSource;
 import htsjdk.samtools.cram.ref.ReferenceSource;
 import htsjdk.samtools.seekablestream.SeekableStream;
-import htsjdk.samtools.sra.SRAAccession;
 import htsjdk.samtools.util.*;
 import htsjdk.samtools.util.zip.InflaterFactory;
 
@@ -359,9 +358,7 @@ public abstract class SamReaderFactory {
                                 IOUtil.toBufferedStream(data.asUnbufferedInputStream()),
                                 validationStringency, this.samRecordFactory);
                     }
-                } else if (type == InputResource.Type.SRA_ACCESSION) {
-                    primitiveSamReader = new SRAFileReader(data.asSRAAccession());
-                } else {
+                }  else {
                     InputStream bufferedStream =
                             IOUtil.maybeBufferInputStream(
                                     data.asUnbufferedInputStream(),
@@ -421,12 +418,7 @@ public abstract class SamReaderFactory {
                             bufferedStream.close();
                             primitiveSamReader = new CRAMFileReader(sourceFile, indexFile, referenceSource, validationStringency);
                         }
-                    } else if (sourceFile != null && isSra(sourceFile)) {
-                        if (bufferedStream != null) {
-                            bufferedStream.close();
-                        }
-                        primitiveSamReader = new SRAFileReader(new SRAAccession(sourceFile.getPath()));
-                    } else {
+                    }  else {
                         if (indexDefined) {
                             bufferedStream.close();
                             throw new RuntimeException("Cannot use index file with textual SAM file");
@@ -446,19 +438,6 @@ public abstract class SamReaderFactory {
                 return reader;
             } catch (final IOException e) {
                 throw new RuntimeIOException(e);
-            }
-        }
-
-        /** Attempts to detect whether the file is an SRA accessioned file. If SRA support is not available, returns false. */
-        private boolean isSra(final File sourceFile) {
-            try {
-                // if SRA fails to initialize (the most common reason is a failure to find/load native libraries),
-                // it will throw a subclass of java.lang.Error and here we only catch subclasses of java.lang.Exception
-                //
-                // Note: SRA initialization errors should not be ignored, but rather shown to user
-                return SRAAccession.isValid(sourceFile.getPath());
-            } catch (final Exception e) {
-                return false;
             }
         }
 
