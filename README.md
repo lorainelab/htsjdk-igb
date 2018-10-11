@@ -1,3 +1,14 @@
+## Loraine Lab release for IGB 
+
+This Loraine Lab branch builds artifact htsdjk-igb-2.16.1 for re-use as an OSGi
+bundle in the IGB project.
+
+Note: this release removes SRA parsing code, which depends on an
+artifact from NCBI. IGB does not parse SRA files, so we don't need to
+include this additional artifact in IGB.
+
+* * * 
+
 [![Coverage Status](https://codecov.io/gh/samtools/htsjdk/branch/master/graph/badge.svg)](https://codecov.io/gh/samtools/htsjdk)
 [![Build Status](https://travis-ci.org/samtools/htsjdk.svg?branch=master)](https://travis-ci.org/samtools/htsjdk)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.samtools/htsjdk/badge.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.github.samtools%22%20AND%20a%3A%22htsjdk%22)
