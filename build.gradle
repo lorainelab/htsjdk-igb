@@ -13,6 +13,8 @@ plugins {
     id 'com.palantir.git-version' version '0.11.0'
     id 'com.github.johnrengelman.shadow' version '2.0.4'
     id 'com.github.maiflai.scalatest' version '0.22'
+    id 'osgi'
+
 }
 
 repositories {
@@ -36,7 +38,6 @@ dependencies {
     compile "org.xerial.snappy:snappy-java:1.1.4"
     compile "org.apache.commons:commons-compress:1.4.1"
     compile "org.tukaani:xz:1.5"
-    compile "gov.nih.nlm.ncbi:ngs-java:2.9.0"
 
     testCompile "org.scala-lang:scala-library:2.12.6"
     testCompile "org.scalatest:scalatest_2.12:3.0.5"
@@ -49,21 +50,27 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 final isRelease = Boolean.getBoolean("release")
-final gitVersion = gitVersion().replaceAll(".dirty", "")
-version = isRelease ? gitVersion : gitVersion + "-SNAPSHOT"
+version = '2.16.1'
 
 logger.info("build for version:" + version)
-group = 'com.github.samtools'
 
 defaultTasks 'jar'
 
 jar {
-    manifest {
-        attributes 'Implementation-Title': 'HTSJDK',
-                'Implementation-Vendor' : 'Samtools Organization',
-                'Implementation-Version': version
+      archiveName = 'htsjdk-igb-'+version+".jar"
+
+      manifest { // the manifest of the default jar is of type OsgiManifest
+          name = 'htsjdk for IGB'
+          instruction 'Bundle-Vendor', 'Loraine Lab'
+          instruction 'Bundle-Description', 'htsjdk for IGB'
+          instruction 'Bundle-DocURL', 'https://github.com/lorainelab/htsjdk'
+
+          }
+
+      from {
+            configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+      }
     }
-}
 
 import org.gradle.internal.os.OperatingSystem;
 
@@ -187,7 +194,7 @@ uploadArchives {
                 name 'HTSJDK'
                 packaging 'jar'
                 description 'A Java API for high-throughput sequencing data (HTS) formats'
-                url 'http://samtools.github.io/htsjdk/'
+                url 'https://github.com/lorainelab/htsjdk'
 
                 developers {
                     developer {
@@ -195,11 +202,6 @@ uploadArchives {
                         name 'Picard Team'
                         url 'http://broadinstitute.github.io/picard'
                     }
-                }
-
-                scm {
-                    url 'git@github.com:samtools/htsjdk.git'
-                    connection 'scm:git:git@github.com:samtools/htsjdk.git'
                 }
 
                 licenses {
