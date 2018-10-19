@@ -25,11 +25,7 @@ package htsjdk.samtools.util;
 
 import htsjdk.samtools.Defaults;
 import htsjdk.samtools.SAMException;
-import org.xerial.snappy.SnappyError;
-import org.xerial.snappy.SnappyInputStream;
-import org.xerial.snappy.SnappyOutputStream;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -48,28 +44,13 @@ public class SnappyLoader {
         this(Defaults.DISABLE_SNAPPY_COMPRESSOR);
     }
 
+    //Snappy is disabled for IGB
     SnappyLoader(boolean disableSnappy) {
         if (disableSnappy) {
             logger.debug("Snappy is disabled via system property.");
             snappyAvailable = false;
-        }
-        else {
-            boolean tmpSnappyAvailable = false;
-            try (final OutputStream test = new SnappyOutputStream(new ByteArrayOutputStream(1000))){
-                test.write("Hello World!".getBytes());
-                tmpSnappyAvailable = true;
-                logger.debug("Snappy successfully loaded.");
-            }
-            /*
-             * ExceptionInInitializerError: thrown by Snappy if native libs fail to load.
-             * IllegalStateException: thrown within the `test.write` call above if no UTF-8 encoder is found.
-             * IOException: potentially thrown by the `test.write` and `test.close` calls.
-             * SnappyError: potentially thrown for a variety of reasons by Snappy.
-             */
-            catch (final ExceptionInInitializerError | IllegalStateException | IOException | SnappyError e) {
-                logger.warn(e, "Snappy native library failed to load.");
-            }
-            snappyAvailable = tmpSnappyAvailable;
+        }else {
+            snappyAvailable = false;
         }
     }
 
@@ -81,7 +62,7 @@ public class SnappyLoader {
      * @throws SAMException if Snappy is not available will throw an exception.
      */
     public InputStream wrapInputStream(final InputStream inputStream) {
-        return wrapWithSnappyOrThrow(inputStream, SnappyInputStream::new);
+        return null;
     }
 
     /**
@@ -89,7 +70,7 @@ public class SnappyLoader {
      * @throws SAMException if Snappy is not available
      */
     public OutputStream wrapOutputStream(final OutputStream outputStream) {
-        return wrapWithSnappyOrThrow(outputStream, (stream) -> new SnappyOutputStream(stream, SNAPPY_BLOCK_SIZE));
+        return null;
     }
 
     private interface IOFunction<T,R> {

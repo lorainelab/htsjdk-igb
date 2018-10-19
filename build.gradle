@@ -33,17 +33,10 @@ jacocoTestReport {
 }
 
 dependencies {
+    compile "commons-logging:commons-logging:1.2"
     compile "org.apache.commons:commons-jexl:2.1.1"
-    compile "commons-logging:commons-logging:1.1.1"
-    compile "org.xerial.snappy:snappy-java:1.1.4"
     compile "org.apache.commons:commons-compress:1.4.1"
     compile "org.tukaani:xz:1.5"
-
-    testCompile "org.scala-lang:scala-library:2.12.6"
-    testCompile "org.scalatest:scalatest_2.12:3.0.5"
-    testRuntime 'org.pegdown:pegdown:1.6.0' // Necessary for generating HTML reports with ScalaTest
-    testCompile "org.testng:testng:6.14.3"
-    testCompile "com.google.jimfs:jimfs:1.1"
  }
 
 sourceCompatibility = 1.8
@@ -66,10 +59,6 @@ jar {
           instruction 'Bundle-DocURL', 'https://github.com/lorainelab/htsjdk'
 
           }
-
-      from {
-            configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-      }
     }
 
 import org.gradle.internal.os.OperatingSystem;
