@@ -37,6 +37,8 @@ dependencies {
     compile "org.apache.commons:commons-jexl:2.1.1"
     compile "org.apache.commons:commons-compress:1.4.1"
     compile "org.tukaani:xz:1.5"
+    compileOnly "org.scala-lang:scala-library:2.12.6"
+    compileOnly "org.scalatest:scalatest_2.12:3.0.5"
  }
 
 sourceCompatibility = 1.8
@@ -169,41 +171,18 @@ signing {
 uploadArchives {
     repositories {
         mavenDeployer {
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                authentication(userName: project.findProperty("sonatypeUsername"), password: project.findProperty("sonatypePassword"))
+            repository(url: project.findProperty("igb-htsjdk-release-repo")) {
+                authentication(userName: project.findProperty("igb-htsjdk-release-username"), password: project.findProperty("igb-htsjdk-release-repo-psswd"))
             }
-
-            snapshotRepository(url: "https://broadinstitute.jfrog.io/broadinstitute/libs-snapshot-local/") {
-                authentication(userName: System.env.ARTIFACTORY_USERNAME, password: System.env.ARTIFACTORY_PASSWORD)
-            }
-
-            pom.project {
-                name 'HTSJDK'
-                packaging 'jar'
-                description 'A Java API for high-throughput sequencing data (HTS) formats'
-                url 'https://github.com/lorainelab/htsjdk'
-
-                developers {
-                    developer {
-                        id 'picard'
-                        name 'Picard Team'
-                        url 'http://broadinstitute.github.io/picard'
-                    }
-                }
-
-                licenses {
-                    license {
-                        name 'MIT License'
-                        url 'http://opensource.org/licenses/MIT'
-                        distribution 'repo'
-                    }
-                }
+            pom.project{
+                version = version
+                artifactId = "htsjdk-igb"
+                groupId = "htsjdk-igb"
+                packaging = "bundle"
             }
         }
     }
     doFirst{
-        System.out.println("Uploading version $version")
+        System.out.println("Uploading artifact")
     }
 }
