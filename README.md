@@ -1,11 +1,31 @@
 ## Loraine Lab release for IGB 
 
-This Loraine Lab branch builds artifact htsdjk-igb-2.16.1 for re-use as an OSGi
+This Loraine Lab branch builds artifact htsdjk-igb for re-use as an OSGi
 bundle in the IGB project.
 
 Note: this release removes SRA parsing code, which depends on an
 artifact from NCBI. IGB does not parse SRA files, so we don't need to
-include this additional artifact in IGB.
+include this additional artifact in IGB. There are some other changes, as well.
+See commit history for details.
+
+To build and deploy:
+
+* Clone repo and run `gradle jar` to build the artifact
+* Upload to https://nexus.bioviz.org to make artifact available to IGB developers (Dr. Loraine will probably need to do this)
+
+To develop new versions:
+
+* Check upstream repository (samtools/htsjdk) for new release tags (e.g., 2.16.2)
+* Synchronize this fork with upstream repository (Dr. Loraine or other project maintainter can do this.)
+* Fork this repository.
+* Branch from the same commit that is tagged with the new upstream release; call it igb-{version}. Use same version string as htsjdk project has used for that release.
+* Update the gradle files accordingly. 
+* Cherry-pick commits from the previous igb-{version} branch on our fork. 
+* Build the bundle and test with IGB code base. For testing, you will need to change the version the top-level POM.xml for the htsjdk-igb artifact in the IGB code base.
+
+**Note**: Our branch will not pass the tests because we are only using functionality required in IGB. Code for reading SRA files is not included, for example.
+
+
 
 * * * 
 

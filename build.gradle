@@ -37,7 +37,6 @@ dependencies {
     compile "org.apache.commons:commons-jexl:2.1.1"
     compile "org.apache.commons:commons-compress:1.4.1"
     compile "org.tukaani:xz:1.5"
-
     compileOnly "org.scala-lang:scala-library:2.12.6"
     compileOnly "org.scalatest:scalatest_2.12:3.0.5"
  }
