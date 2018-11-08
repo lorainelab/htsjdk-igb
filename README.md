@@ -5,7 +5,10 @@ bundle in the IGB project.
 
 Note: this release removes SRA parsing code, which depends on an
 artifact from NCBI. IGB does not parse SRA files, so we don't need to
-include this additional artifact in IGB. There are some other changes, as well.
+include this additional artifact in IGB. 
+
+In addition, we remove references to scala. 
+
 See commit history for details.
 
 To build and deploy:
@@ -15,10 +18,10 @@ To build and deploy:
 
 To develop new versions:
 
-* Check upstream repository (samtools/htsjdk) for new release tags (e.g., 2.16.2)
+* Check upstream repository (samtools/htsjdk) for new release tags.
 * Synchronize this fork with upstream repository (Dr. Loraine or other project maintainter can do this.)
 * Fork this repository.
-* Branch from the same commit that is tagged with the new upstream release; call it igb-{version}. Use same version string as htsjdk project has used for that release.
+* Branch from the same commit that is tagged with the new upstream release; call it igb-{version}. 
 * Update the gradle files accordingly. 
 * Cherry-pick commits from the previous igb-{version} branch on our fork. 
 * Build the bundle and test with IGB code base. For testing, you will need to change the version the top-level POM.xml for the htsjdk-igb artifact in the IGB code base.
