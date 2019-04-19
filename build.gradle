@@ -75,16 +75,15 @@ artifacts {
 }
 
 /**
- * Upload a release to sonatype.  You must be an authorized uploader and have your sonatype
- * username and password information in your gradle properties file.  See the readme for more info.
+ * Upload a release to Loraine Lab nexus repository. 
  *
  * For releasing to your local maven repo, use gradle install
  */
 uploadArchives {
     repositories {
         mavenDeployer {
-            repository(url: project.findProperty("igb-htsjdk-release-repo")) {
-                authentication(userName: project.findProperty("igb-htsjdk-release-username"), password: project.findProperty("igb-htsjdk-release-repo-psswd"))
+            repository(url: "") {
+                authentication(userName: "", password: "")
             }
             pom.project{
                 version = version
