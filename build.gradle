@@ -26,21 +26,17 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 final isRelease = Boolean.getBoolean("release")
-version = '2.16.2'
-
-logger.info("build for version:" + version)
+version = '2.16.1'
 
 defaultTasks 'jar'
 
 jar {
   archiveName = 'htsjdk-igb-'+version+".jar"
-
   manifest { // the manifest of the default jar is of type OsgiManifest
       name = 'htsjdk for IGB'
       instruction 'Bundle-Vendor', 'Loraine Lab'
       instruction 'Bundle-Description', 'htsjdk for IGB'
       instruction 'Bundle-DocURL', 'https://github.com/lorainelab/htsjdk'
-
       }
 }
 
