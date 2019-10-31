@@ -300,6 +300,14 @@ public class CRAMFileReader extends SamReader.ReaderImplementation implements Sa
         return mIndex;
     }
 
+    /**
+      This method is added to support BAI in IGB [IGBF-1920]
+    **/
+    @Override
+    public BAMIndex getIndexforBAI() {
+      return null;
+    }
+
     @Override
     public boolean hasBrowseableIndex() {
         return false;
@@ -307,6 +315,11 @@ public class CRAMFileReader extends SamReader.ReaderImplementation implements Sa
 
     @Override
     public BrowseableBAMIndex getBrowseableIndex() {
+        return null;
+    }
+
+    @Override
+    public BrowseableBAMIndex getBrowseableIndexforBAI() {
         return null;
     }
 

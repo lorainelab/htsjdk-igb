@@ -119,6 +119,14 @@ class SAMTextReader extends SamReader.ReaderImplementation {
         throw new UnsupportedOperationException();
     }
 
+    /**
+      This method is added to support BAI in IGB [IGBF-1920]
+    **/
+    @Override
+    public BAMIndex getIndexforBAI() {
+        throw new UnsupportedOperationException();
+    }
+
     @Override
     public void close() {
         if (mReader != null) {
@@ -270,4 +278,3 @@ class SAMTextReader extends SamReader.ReaderImplementation {
 
     }
 }
-

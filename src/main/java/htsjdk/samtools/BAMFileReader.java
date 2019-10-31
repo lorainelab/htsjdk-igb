@@ -408,6 +408,21 @@ public class BAMFileReader extends SamReader.ReaderImplementation {
         return mIndex;
     }
 
+    /**
+      This method is added to support BAI in IGB [IGBF-1920]
+    **/
+    public BAMIndex getIndexforBAI() {
+        if(mIndex == null) {
+            if (mIndexFile != null)
+                mIndex = mEnableIndexCaching ? new CachingBAMFileIndex(mIndexFile, getFileHeader().getSequenceDictionary(), mEnableIndexMemoryMapping)
+                                             : new DiskBasedBAMFileIndex(mIndexFile, getFileHeader().getSequenceDictionary(), mEnableIndexMemoryMapping);
+            else
+                mIndex = mEnableIndexCaching ? new CachingBAMFileIndex(mIndexStream, getFileHeader().getSequenceDictionary())
+                                             : new DiskBasedBAMFileIndex(mIndexStream, getFileHeader().getSequenceDictionary());
+        }
+        return mIndex;
+    }
+
     public void setEagerDecode(final boolean desired) { this.eagerDecode = desired; }
 
     @Override

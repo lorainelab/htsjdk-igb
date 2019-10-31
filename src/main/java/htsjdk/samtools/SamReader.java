@@ -116,6 +116,10 @@ public interface SamReader extends Iterable<SAMRecord>, Closeable {
         public BrowseableBAMIndex getBrowseableIndex();
 
         /**
+          This method is added to support BAI in IGB [IGBF-1920]
+        **/
+        public BrowseableBAMIndex getBrowseableIndexforBAI();
+        /**
          * Iterate through the given chunks in the file.
          *
          * @param chunks List of chunks for which to retrieve data.
@@ -348,6 +352,8 @@ public interface SamReader extends Iterable<SAMRecord>, Closeable {
 
         SAMFileHeader getFileHeader();
 
+        BAMIndex getIndexforBAI();
+
         CloseableIterator<SAMRecord> getIterator();
 
         CloseableIterator<SAMRecord> getIterator(SAMFileSpan fileSpan);
@@ -473,6 +479,15 @@ public interface SamReader extends Iterable<SAMRecord>, Closeable {
             return BrowseableBAMIndex.class.cast(index);
         }
 
+        /**
+          This method is added to support BAI in IGB [IGBF-1920]
+        **/
+        @Override
+        public BrowseableBAMIndex getBrowseableIndexforBAI() {
+            final BAMIndex index = getIndexforBAI();
+            return BrowseableBAMIndex.class.cast(index);
+        }
+
         @Override
         public SAMRecordIterator iterator() {
             return new AssertingIterator(p.getIterator());
@@ -521,6 +536,13 @@ public interface SamReader extends Iterable<SAMRecord>, Closeable {
         @Override
         public BAMIndex getIndex() {
             return p.getIndex();
+        }
+        
+        /**
+          This method is added to support BAI in IGB [IGBF-1920]
+        **/
+        public BAMIndex getIndexforBAI() {
+            return p.getIndexforBAI();
         }
 
         @Override
