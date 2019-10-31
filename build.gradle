@@ -30,6 +30,7 @@ targetCompatibility = 1.8
 
 final isRelease = Boolean.getBoolean("release")
 version = '2.16.2'
+group = 'htsjdk-igb'
 
 logger.info("build for version:" + version)
 
@@ -77,7 +78,7 @@ artifacts {
 }
 
 /**
- * Upload a release to Loraine Lab nexus repository. 
+ * Upload a release to Loraine Lab nexus repository.
  *
  * For releasing to your local maven repo, use gradle install
  */
