@@ -409,9 +409,11 @@ public class BAMFileReader extends SamReader.ReaderImplementation {
     }
 
     /**
-      This method is added to support BAI in IGB [IGBF-1920]
+      The method is added to support visualization of BAI index files in Integrated Genome Browser.
+      See https://jira.transvar.org/browse/IGBF-1920.
+      getIndexAlt() method is almost same as getIndex() method. !hasIndex() check is removed because empty BAM input(InputStream) is not seekable(mIsSeekable=false)
     **/
-    public BAMIndex getIndexforBAI() {
+    public BAMIndex getIndexAlt() {
         if(mIndex == null) {
             if (mIndexFile != null)
                 mIndex = mEnableIndexCaching ? new CachingBAMFileIndex(mIndexFile, getFileHeader().getSequenceDictionary(), mEnableIndexMemoryMapping)

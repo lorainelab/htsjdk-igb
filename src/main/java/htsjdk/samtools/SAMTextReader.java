@@ -120,10 +120,12 @@ class SAMTextReader extends SamReader.ReaderImplementation {
     }
 
     /**
-      This method is added to support BAI in IGB [IGBF-1920]
+      The method is added to support visualization of BAI index files in Integrated Genome Browser.
+      See https://jira.transvar.org/browse/IGBF-1920.
+      getIndexAlt() method is not supported here. It is added because ReaderImplementation implements PrimitiveSamReader interface.
     **/
     @Override
-    public BAMIndex getIndexforBAI() {
+    public BAMIndex getIndexAlt() {
         throw new UnsupportedOperationException();
     }
 
