@@ -11,10 +11,13 @@ In addition, we remove references to scala.
 
 See commit history for details.
 
-To build and deploy:
+To build and deploy locally:
 
-* Clone repo and run `gradle jar` to build the artifact
-* Upload to https://nexus.bioviz.org to make artifact available to IGB developers (Dr. Loraine will probably need to do this)
+* Run `grade install` to build the artifact and copy it to your local .m2 repository.
+
+To build and deploy for others to use:
+
+* Run `grade deploy` to build the artifact and upload to https://nexus.bioviz.org. Requires proper credentials.
 
 To develop new versions:
 
