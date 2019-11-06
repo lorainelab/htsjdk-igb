@@ -116,6 +116,11 @@ public interface SamReader extends Iterable<SAMRecord>, Closeable {
         public BrowseableBAMIndex getBrowseableIndex();
 
         /**
+          The method is added to support visualization of BAI index files in Integrated Genome Browser.
+          See https://jira.transvar.org/browse/IGBF-1920.
+        **/
+        public BrowseableBAMIndex getBrowseableIndexAlt();
+        /**
          * Iterate through the given chunks in the file.
          *
          * @param chunks List of chunks for which to retrieve data.
@@ -348,6 +353,12 @@ public interface SamReader extends Iterable<SAMRecord>, Closeable {
 
         SAMFileHeader getFileHeader();
 
+        /**
+          The method is added to support visualization of BAI index files in Integrated Genome Browser.
+          See https://jira.transvar.org/browse/IGBF-1920.
+        **/
+        BAMIndex getIndexAlt();
+
         CloseableIterator<SAMRecord> getIterator();
 
         CloseableIterator<SAMRecord> getIterator(SAMFileSpan fileSpan);
@@ -473,6 +484,18 @@ public interface SamReader extends Iterable<SAMRecord>, Closeable {
             return BrowseableBAMIndex.class.cast(index);
         }
 
+        /**
+          The method is added to support visualization of BAI index files in Integrated Genome Browser.
+          See https://jira.transvar.org/browse/IGBF-1920.
+          getBrowseableIndexAlt() method is same as getBrowseableIndex() except BrowseableBAMIndex check.
+          Instance of BrowseableBAMIndex check is removed because in our case index is cacheable not browseable
+        **/
+        @Override
+        public BrowseableBAMIndex getBrowseableIndexAlt() {
+            final BAMIndex index = getIndexAlt();
+            return BrowseableBAMIndex.class.cast(index);
+        }
+
         @Override
         public SAMRecordIterator iterator() {
             return new AssertingIterator(p.getIterator());
@@ -521,6 +544,14 @@ public interface SamReader extends Iterable<SAMRecord>, Closeable {
         @Override
         public BAMIndex getIndex() {
             return p.getIndex();
+        }
+
+        /**
+          The method is added to support visualization of BAI index files in Integrated Genome Browser.
+          See https://jira.transvar.org/browse/IGBF-1920.
+        **/
+        public BAMIndex getIndexAlt() {
+            return p.getIndexAlt();
         }
 
         @Override

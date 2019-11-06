@@ -78,6 +78,10 @@ public abstract class SamReaderFactory {
     private static ValidationStringency defaultValidationStringency = ValidationStringency.DEFAULT_STRINGENCY;
 
     abstract public SamReader open(final File file);
+    /**
+      This method is added to support BAI in IGB [IGBF-1920]
+    **/
+    abstract public SamReader open(final InputStream bamFile,final File baiFile);
 
     /**
      * Open the specified path (without using any wrappers).
@@ -198,12 +202,21 @@ public abstract class SamReaderFactory {
             this.customReaderFactory = CustomReaderFactory.getInstance();
             this.inflaterFactory = inflaterFactory;
         }
-   
+
         @Override
         public SamReader open(final File file) {
             final SamInputResource r = SamInputResource.of(file);
             final File indexMaybe = SamFiles.findIndex(file);
             if (indexMaybe != null) r.index(indexMaybe);
+            return open(r);
+        }
+
+        /**
+          This method is added to support BAI in IGB [IGBF-1920]
+        **/
+        public SamReader open(final InputStream bamFile,final File baiFile) {
+            final SamInputResource r = SamInputResource.of(bamFile);
+            if (baiFile != null) r.index(baiFile);
             return open(r);
         }
 
