@@ -276,13 +276,30 @@ public class CRAMFileReader extends SamReader.ReaderImplementation implements Sa
         }
         return mIndex;
     }
-
+    /**
+     The method is added to support visualization of BAI index files in Integrated Genome Browser.
+     See https://jira.transvar.org/browse/IGBF-1920.
+     getIndexAlt() is not supported here. It is added because ReaderImplementation implements PrimitiveSamReader interface.
+     **/
+    @Override
+    public BAMIndex getIndexAlt() {
+        throw new UnsupportedOperationException();
+    }
     @Override
     public boolean hasBrowseableIndex() { return false; }
 
     @Override
     public BrowseableBAMIndex getBrowseableIndex() { return null; }
 
+    /**
+     The method is added to support visualization of BAI index files in Integrated Genome Browser.
+     See https://jira.transvar.org/browse/IGBF-1920.
+     getBrowseableIndexAlt() method is not supported here. It is added because CRAMFileReader implements SamReader.Indexing interface
+     **/
+    @Override
+    public BrowseableBAMIndex getBrowseableIndexAlt() {
+        throw new UnsupportedOperationException();
+    }
     @Override
     public SAMRecordIterator iterator(final SAMFileSpan fileSpan) {
         // get the file coordinates for the span:

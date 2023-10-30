@@ -93,6 +93,11 @@ public class SRAFileReader extends SamReader.ReaderImplementation implements Sam
     }
 
     @Override
+    public BAMIndex getIndexAlt() {
+        return null;
+    }
+
+    @Override
     public SAMFileHeader getFileHeader() {
         return virtualHeader;
     }
@@ -205,6 +210,11 @@ public class SRAFileReader extends SamReader.ReaderImplementation implements Sam
     @Override
     public BrowseableBAMIndex getBrowseableIndex() {
         return index;
+    }
+
+    @Override
+    public BrowseableBAMIndex getBrowseableIndexAlt() {
+        throw new UnsupportedOperationException();
     }
 
     /**

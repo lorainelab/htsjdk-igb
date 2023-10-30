@@ -435,6 +435,22 @@ public class BAMFileReader extends SamReader.ReaderImplementation {
 
         return mIndex;
     }
+    /**
+     The method is added to support visualization of BAI index files in Integrated Genome Browser.
+     See https://jira.transvar.org/browse/IGBF-1920.
+     getIndexAlt() method is almost same as getIndex() method. !hasIndex() check is removed because empty BAM input(InputStream) is not seekable(mIsSeekable=false)
+     **/
+    public BAMIndex getIndexAlt() {
+        if(mIndex == null) {
+            if (mIndexFile != null)
+                mIndex = mEnableIndexCaching ? new CachingBAMFileIndex(mIndexFile, getFileHeader().getSequenceDictionary(), mEnableIndexMemoryMapping)
+                        : new DiskBasedBAMFileIndex(mIndexFile, getFileHeader().getSequenceDictionary(), mEnableIndexMemoryMapping);
+            else
+                mIndex = mEnableIndexCaching ? new CachingBAMFileIndex(mIndexStream, getFileHeader().getSequenceDictionary())
+                        : new DiskBasedBAMFileIndex(mIndexStream, getFileHeader().getSequenceDictionary());
+        }
+        return mIndex;
+    }
 
     /**
      * Return the type of the BAM index, BAI or CSI.

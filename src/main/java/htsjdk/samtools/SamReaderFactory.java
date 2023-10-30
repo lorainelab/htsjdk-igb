@@ -82,6 +82,12 @@ public abstract class SamReaderFactory {
     abstract public SamReader open(final File file);
 
     /**
+     This method is added to support BAI in IGB [IGBF-1920]
+     **/
+    abstract public SamReader open(final InputStream bamFile,final File baiFile);
+
+
+    /**
      * Open the specified path (without using any wrappers).
      *
      * @param path the SAM or BAM file to open.
@@ -206,6 +212,12 @@ public abstract class SamReaderFactory {
             final SamInputResource r = SamInputResource.of(file);
             final File indexMaybe = SamFiles.findIndex(file);
             if (indexMaybe != null) r.index(indexMaybe);
+            return open(r);
+        }
+
+        public SamReader open(final InputStream bamFile,final File baiFile) {
+            final SamInputResource r = SamInputResource.of(bamFile);
+            if (baiFile != null) r.index(baiFile);
             return open(r);
         }
 

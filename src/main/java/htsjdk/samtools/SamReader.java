@@ -121,6 +121,8 @@ public interface SamReader extends Iterable<SAMRecord>, Closeable {
          */
         public BrowseableBAMIndex getBrowseableIndex();
 
+        public BrowseableBAMIndex getBrowseableIndexAlt();
+
         /**
          * Iterate through the given chunks in the file.
          *
@@ -363,6 +365,12 @@ public interface SamReader extends Iterable<SAMRecord>, Closeable {
 
         BAMIndex getIndex();
 
+        /**
+         The method is added to support visualization of BAI index files in Integrated Genome Browser.
+         See https://jira.transvar.org/browse/IGBF-1920.
+         **/
+        BAMIndex getIndexAlt();
+
         SAMFileHeader getFileHeader();
 
         CloseableIterator<SAMRecord> getIterator();
@@ -490,6 +498,25 @@ public interface SamReader extends Iterable<SAMRecord>, Closeable {
             return BrowseableBAMIndex.class.cast(index);
         }
 
+        /**
+         The method is added to support visualization of BAI index files in Integrated Genome Browser.
+         See https://jira.transvar.org/browse/IGBF-1920.
+         getBrowseableIndexAlt() method is same as getBrowseableIndex() except BrowseableBAMIndex check.
+         Instance of BrowseableBAMIndex check is removed because in our case index is cacheable not browseable
+         **/
+        @Override
+        public BrowseableBAMIndex getBrowseableIndexAlt() {
+            final BAMIndex index = getIndexAlt();
+            return BrowseableBAMIndex.class.cast(index);
+        }
+
+        /**
+         The method is added to support visualization of BAI index files in Integrated Genome Browser.
+         See https://jira.transvar.org/browse/IGBF-1920.
+         **/
+        public BAMIndex getIndexAlt() {
+            return p.getIndexAlt();
+        }
         @Override
         public SAMRecordIterator iterator() {
             return new AssertingIterator(p.getIterator());

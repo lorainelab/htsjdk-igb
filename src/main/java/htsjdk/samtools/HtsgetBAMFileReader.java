@@ -241,6 +241,11 @@ public class HtsgetBAMFileReader extends SamReader.ReaderImplementation {
     }
 
     @Override
+    public BAMIndex getIndexAlt() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public SAMFileHeader getFileHeader() {
         return this.mFileHeader;
     }
