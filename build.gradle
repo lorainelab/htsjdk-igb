@@ -190,6 +190,39 @@ tasks.withType(com.github.spotbugs.SpotBugsTask) {
         html.enabled = true
     }
 }
+/**
+ *This specifies what artifacts will be built and uploaded when performing a maven upload.
+ */
+artifacts {
+    archives jar
+    archives javadocJar
+    archives sourcesJar
+}
+
+/**
+ * Upload a release to Loraine Lab nexus repository.
+ *
+ * For releasing to your local maven repo, use gradle install
+ */
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "") {
+                authentication(userName: "", password: "")
+            }
+            pom.project{
+                version = version
+                artifactId = "htsjdk-igb"
+                groupId = "htsjdk-igb"
+                packaging = "bundle"
+            }
+        }
+    }
+    doFirst{
+        System.out.println("Uploading artifact")
+    }
+}
+
 /*
 publishing {
     publications {
