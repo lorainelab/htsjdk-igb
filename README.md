@@ -2,36 +2,46 @@
 ## Loraine Lab HTSJDK release for IGB
 This Loraine Lab branch builds artifact htsdjk-igb for re-use as an OSGi bundle in the IGB project.
 
-Note: To re-use HTSJDK as OSGI bundle, we have configured additional dependencies related to OSGI in the build.gradle file. See commit history for more details
+Note: To re-use HTSJDK as an OSGI bundle, we have configured additional dependencies related to OSGI in the build.gradle file. See commit history for more details
 
 ### Environment Setup
-- HTSJDK is built using gradle. You can find the required version of Gradle for this project in the build.gradle file.
+- HTSJDK is built using gradle.
 - A Java JDK is required to build and run this project. [The HTSJDK Release notes](https://github.com/samtools/htsjdk/releases) contain information about releases and which Java versions they support.
 
 ### To build and deploy
  ```
-  gradle build -x test
+  ./gradlew clean build -x test
  ```
+In windows, the command is
+
+ ```
+  gradlew.bat clean build -x test
+ ```
+If the gradlew.bat file is not available in the project root folder, Install the required gradle version (available in build.gradle file) and run the below command:
+ ```
+  gradle clean build -x test
+ ```
+
 Note: Our branch will not pass the test cases because we are only using functionality required in IGB.
 
-If the build is successful, a folder named build will appear after running the above command. Look for htsjdk-igb-<version>.jar in the build/libs folder.
-
-Upload the artifact to https://nexus.bioviz.org to make it available to IGB developers (Dr. Loraine will probably need to do this).
+If the build is successful, a folder named build will appear after running the above command. Look for htsjdk-igb.jar in the build/libs folder.
 
 ### Deploy artifact locally
 Install the artifact in your local maven repository to test it locally. For example:
 ```
-mvn install:install-file -Dfile="<path to jar file>" -DgroupId="htsjdk-igb" -DartifactId="htsjdk-igb" -Dversion="<#.#.#>" -Dpackaging="jar" -DgeneratePom="true"
+gradle install
 ```
-Make sure to change path to jar file and #.#.# to the appropriate path and version number.
-
 Note: The BigWig artifact (an IGB dependency) uses htsjdk-igb and may need to be modified to specify the new htsjdk-igb artifact.
-
+### Deploy artifact to remote
+To build the artifact and upload to https://nexus.bioviz.org/, run the below command (Requires proper credentials):
+```
+gradle deploy
+```
 ### To develop new versions
 - Check upstream repository [(samtools/htsjdk)](https://github.com/samtools/htsjdk) for new releases and review the [release notes](https://github.com/samtools/htsjdk/releases) to determine the supported Java version (3.0.5 is the last gasp of Java 8).
 - Clone the samtools/htsjdk repository and create a branch from the desired release tag following the convention igb-{version}
 - Fetch the latest version of htsjdk-igb from [lorainelab/htsjdk-igb](https://github.com/lorainelab/htsjdk-igb) into your local repository.
-- The two main differences between samtools/htsjdk and lorainelab/htsjdk-igb are changes in build.gradle file (to uses it as OSGI bundle) and added support for visualizing BAI files directly.
+- The two main differences between samtools/htsjdk and lorainelab/htsjdk-igb are changes in the build.gradle file (to uses it as an OSGI bundle) and added support for visualizing BAI files directly.
 - There are two ways to incorporate changes from lorainelab/htsjdk-igb into your working branch.
   - Merge your working branch with the latest version of htsjdk-igb, using 'theirs' strategy to prioritize lorainelab/htsjdk-igb in case of merge conflicts.
   - Run the git diff command to compare your working branch with lorianelab/htsjdk-igb's latest version and incorporate those changes into your working branch.
