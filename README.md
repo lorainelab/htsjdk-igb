@@ -8,7 +8,7 @@ Note: To re-use HTSJDK as an OSGI bundle, we have configured additional dependen
 - HTSJDK is built using gradle.
 - A Java JDK is required to build and run this project. [The HTSJDK Release notes](https://github.com/samtools/htsjdk/releases) contain information about releases and which Java versions they support.
 
-### To build and deploy
+### Build artifact
  ```
   ./gradlew clean build -x test
  ```
@@ -41,7 +41,7 @@ gradle deploy
 - Check upstream repository [(samtools/htsjdk)](https://github.com/samtools/htsjdk) for new releases and review the [release notes](https://github.com/samtools/htsjdk/releases) to determine the supported Java version (3.0.5 is the last gasp of Java 8).
 - Clone the samtools/htsjdk repository and create a branch from the desired release tag following the convention igb-{version}
 - Fetch the latest version of htsjdk-igb from [lorainelab/htsjdk-igb](https://github.com/lorainelab/htsjdk-igb) into your local repository.
-- The two main differences between samtools/htsjdk and lorainelab/htsjdk-igb are changes in the build.gradle file (to uses it as an OSGI bundle) and added support for visualizing BAI files directly.
+- The two main differences between samtools/htsjdk and lorainelab/htsjdk-igb are changes in the build.gradle file (to use it as an OSGI bundle) and added support for visualizing BAI files directly.
 - There are two ways to incorporate changes from lorainelab/htsjdk-igb into your working branch.
   - Merge your working branch with the latest version of htsjdk-igb, using 'theirs' strategy to prioritize lorainelab/htsjdk-igb in case of merge conflicts.
   - Run the git diff command to compare your working branch with lorianelab/htsjdk-igb's latest version and incorporate those changes into your working branch.
