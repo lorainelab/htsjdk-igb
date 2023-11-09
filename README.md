@@ -1,3 +1,51 @@
+
+## Loraine Lab HTSJDK release for IGB
+This Loraine Lab branch builds artifact htsdjk-igb for re-use as an OSGi bundle in the IGB project.
+
+Note: To re-use HTSJDK as an OSGI bundle, we have configured additional dependencies related to OSGI in the build.gradle file. See commit history for more details
+
+### Environment Setup
+- HTSJDK is built using gradle.
+- A Java JDK is required to build and run this project. [The HTSJDK Release notes](https://github.com/samtools/htsjdk/releases) contain information about releases and which Java versions they support.
+
+### Build artifact
+ ```
+  ./gradlew clean build -x test
+ ```
+In windows, the command is
+
+ ```
+  gradlew.bat clean build -x test
+ ```
+If the gradlew.bat file is not available in the project root folder, Install the required gradle version (available in build.gradle file) and run the below command:
+ ```
+  gradle clean build -x test
+ ```
+
+Note: Our branch will not pass the test cases because we are only using functionality required in IGB.
+
+If the build is successful, a folder named build will appear after running the above command. Look for htsjdk-igb.jar in the build/libs folder.
+
+### Deploy artifact locally
+Install the artifact in your local maven repository to test it locally. For example:
+```
+gradle install
+```
+Note: The BigWig artifact (an IGB dependency) uses htsjdk-igb and may need to be modified to specify the new htsjdk-igb artifact.
+### Deploy artifact to remote
+To build the artifact and upload to https://nexus.bioviz.org/, run the below command (Requires proper credentials):
+```
+gradle deploy
+```
+### To develop new versions
+- Check upstream repository [(samtools/htsjdk)](https://github.com/samtools/htsjdk) for new releases and review the [release notes](https://github.com/samtools/htsjdk/releases) to determine the supported Java version (3.0.5 is the last gasp of Java 8).
+- Clone the samtools/htsjdk repository and create a branch from the desired release tag following the convention igb-{version}
+- Fetch the latest version of htsjdk-igb from [lorainelab/htsjdk-igb](https://github.com/lorainelab/htsjdk-igb) into your local repository.
+- The two main differences between samtools/htsjdk and lorainelab/htsjdk-igb are changes in the build.gradle file (to use it as an OSGI bundle) and added support for visualizing BAI files directly.
+- There are two ways to incorporate changes from lorainelab/htsjdk-igb into your working branch.
+  - Merge your working branch with the latest version of htsjdk-igb, using 'theirs' strategy to prioritize lorainelab/htsjdk-igb in case of merge conflicts.
+  - Run the git diff command to compare your working branch with lorianelab/htsjdk-igb's latest version and incorporate those changes into your working branch.
+----
 [![Coverage Status](https://codecov.io/gh/samtools/htsjdk/branch/master/graph/badge.svg)](https://codecov.io/gh/samtools/htsjdk)
 [![Build and Test](https://github.com/samtools/htsjdk/actions/workflows/tests.yml/badge.svg?branch=master&event=push)](https://github.com/samtools/htsjdk/actions/workflows/tests.yml)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.samtools/htsjdk/badge.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.github.samtools%22%20AND%20a%3A%22htsjdk%22)
@@ -5,11 +53,11 @@
 [![Language](http://img.shields.io/badge/language-java-brightgreen.svg)](https://www.java.com/)
 [![Join the chat at https://gitter.im/samtools/htsjdk](https://badges.gitter.im/samtools/htsjdk.svg)](https://gitter.im/samtools/htsjdk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-## A Java API for high-throughput sequencing data (HTS) formats.  
+## A Java API for high-throughput sequencing data (HTS) formats.
 
 HTSJDK is an implementation of a unified Java library for accessing
 common file formats, such as [SAM][1] and [VCF][2], used for high-throughput
-sequencing data.  There are also an number of useful utilities for 
+sequencing data.  There are also an number of useful utilities for
 manipulating HTS data.
 
 > **NOTE: _HTSJDK has only partial support for the latest Variant Call Format Specification.  VCFv4.3 can be read but not written and there is no support for BCFv2.2_**
@@ -31,17 +79,17 @@ HTSJDK is now built using [gradle](http://gradle.org/).
 A wrapper script (`gradlew`) is included which will download the appropriate version of gradle on the first invocation.
 
 Example gradle usage from the htsjdk root directory:
- - compile and build a jar 
+- compile and build a jar
  ```
  ./gradlew
  ```
- or
+or
  ```
  ./gradlew jar
  ```
- The jar will be in build/libs/htsjdk-\<version\>.jar where version is based on the current git commit.
+The jar will be in build/libs/htsjdk-\<version\>.jar where version is based on the current git commit.
 
- - run tests, a specific test class, or run a test and wait for the debugger to connect
+- run tests, a specific test class, or run a test and wait for the debugger to connect
  ```
  ./gradlew test
 
@@ -55,22 +103,22 @@ Example gradle usage from the htsjdk root directory:
 ./gradlew jacocoTestReport
 ```
 
- - clean the project directory
+- clean the project directory
  ```
  ./gradlew clean
  ```
 
- - build a monolithic jar that includes all of htsjdk's dependencies
+- build a monolithic jar that includes all of htsjdk's dependencies
  ```
  ./gradlew shadowJar
  ```
- 
- - create a snapshot and install it into your local maven repository
+
+- create a snapshot and install it into your local maven repository
  ```
  ./gradlew install
  ```
 
- - for an exhaustive list of all available targets
+- for an exhaustive list of all available targets
  ```
  ./gradlew tasks
  ```
@@ -86,13 +134,13 @@ From time to time if dependencies change in htsjdk you may need to refresh the p
 
 ### Code style
 Style guides files are included for Intellij and Eclipse.  These are a variation of the [Google Java Style](https://google.github.io/styleguide/javaguide.html) with 4 space indentation.
-This style is suggested for new code but not rigidly checked.  We allow for contributors to deviate from the style when it improves clarity or to match surrounding code. 
+This style is suggested for new code but not rigidly checked.  We allow for contributors to deviate from the style when it improves clarity or to match surrounding code.
 Existing code does not necessarily conform to this and does not need to be modified to do so, but users are encouraged to correct the formatting of code that they modify.
 
 ### Licensing Information
 
-Not all sub-packages of htsjdk are subject to the same license, so a license notice is included in each source file or sub-package as appropriate. 
-Please check the relevant license notice whenever you start working with a part of htsjdk that you have not previously worked with to avoid any surprises. 
+Not all sub-packages of htsjdk are subject to the same license, so a license notice is included in each source file or sub-package as appropriate.
+Please check the relevant license notice whenever you start working with a part of htsjdk that you have not previously worked with to avoid any surprises.
 Broadly speaking the majority of the code is covered under the MIT license with the following notable exceptions:
 
 * Much of the CRAM code is under the Apache License, Version 2
@@ -102,9 +150,9 @@ Broadly speaking the majority of the code is covered under the MIT license with 
 ### Java Minimum Version Support Policy
 
 Htsjdk currently targets Java 8 and is tested on both 8 and 11.
-We do not currently plan to support versions of Java which are not long-term-support releases (ex: 9, 10, or 12).  
+We do not currently plan to support versions of Java which are not long-term-support releases (ex: 9, 10, or 12).
 
-We will notify the community at least 6 months before we plan to stop support for Java 8.  
+We will notify the community at least 6 months before we plan to stop support for Java 8.
 
 Java SE Major Release | End of Java SE Oracle Public Updates / OpenJDK support | Proposed End of Support in HTSJDK | Actual End of Support in HTSJDK
 ---- | ---- | ---- | ----
@@ -113,23 +161,23 @@ Java SE Major Release | End of Java SE Oracle Public Updates / OpenJDK support |
 8  | Jan 2019 | TBD      | TBD
 11 | Sep 2022 | TBD      | TBD
 
- 
+
 ### Meaning of the Htsjdk version number
 We encourage downstream projects to use the most recent htsjdk release in order to have access to the most up to date features and bug fixes.  It is therefore important therefore to make upgrading to newer versions as easy as possible. We make a best effort to adhere to the following principles in order to minimize disruption to projects that depend on htsjdk:
-* Avoid making breaking changes whenever possible. A breaking change is one which requires downstream projects to recompile against the new version of htsjdk or make changes to their source code.  These include both binary incompatiblities and source incompatibilites. 
+* Avoid making breaking changes whenever possible. A breaking change is one which requires downstream projects to recompile against the new version of htsjdk or make changes to their source code.  These include both binary incompatiblities and source incompatibilites.
 * Deprecate and provide new alternatives instead of removing exising APIs.
 * Document breaking changes in the release notes.
 * Provide clear instructions for upgrading to new API's when breaking changes/ deprecations occur.
 * Provide explanations for the rare cases when functionality is deprecated or removed without replacement.
 
 We treat any accessible class/method/field as part of our API and attempt to minimize changes to it with the following exceptions:
-  * The `htsjdk.samtools.cram` package and subpackages are considered unstable and are undergoing major changes.
-  * Code which has not yet been released in a numbered version is considered unstable and subject to change without warning.
-  * We consider changes to *public* code more disruptive than changes to *protected* code in classes that we believe are not generally subclassed by the downstream community.
-  
+* The `htsjdk.samtools.cram` package and subpackages are considered unstable and are undergoing major changes.
+* Code which has not yet been released in a numbered version is considered unstable and subject to change without warning.
+* We consider changes to *public* code more disruptive than changes to *protected* code in classes that we believe are not generally subclassed by the downstream community.
+
 Our current version number has 3 parts. **ex: 2.19.0**
 
-* **Major version bumps (2.19.0 -> 3.0.0)** allow large changes to the existing API's and require substantial changes in downstream projects. These are extremely rare. 
+* **Major version bumps (2.19.0 -> 3.0.0)** allow large changes to the existing API's and require substantial changes in downstream projects. These are extremely rare.
 * **Minor versions bumps ( 2.18.2 -> 2.19.0)** may include additions to the API and well as breaking changes which may require recompiling downstream projects. We attempt to limit breaking changes as much as possible and generally most projects which depend on htsjdk should be able to update to a new minor version with no changes or only simple and obvious changes. We may introduce deprecations which suggest but don't mandate more complex code changes. Minor releases may also remove functionality which has been deprecated for a long time.
 * **Patch version changes (2.18.1 -> 2.18.2)** include additions and possibly deprecations but no breaking changes.
 
@@ -137,4 +185,3 @@ Our current version number has 3 parts. **ex: 2.19.0**
 
 [1]: http://samtools.sourceforge.net
 [2]: http://vcftools.sourceforge.net/specs.html
-
