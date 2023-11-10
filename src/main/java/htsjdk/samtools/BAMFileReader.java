@@ -175,12 +175,10 @@ public class BAMFileReader extends SamReader.ReaderImplementation {
         throws IOException {
         this(useAsynchronousIO ? new AsyncBlockCompressedInputStream(file, inflaterFactory) : new BlockCompressedInputStream(file, inflaterFactory),
                 indexFile!=null ? indexFile : SamFiles.findIndex(file), eagerDecode, useAsynchronousIO, file.getAbsolutePath(), validationStringency, samRecordFactory);
-
-        if (mIndexFile != null && mIndexFile.lastModified() < file.lastModified() - 5000) {
+        if (mIndexFile != null && mIndexFile.lastModified() < file.lastModified()) {
             System.err.println("WARNING: BAM index file " + mIndexFile.getAbsolutePath() +
                     " is older than BAM " + file.getAbsolutePath());
         }
-
         // Provide better error message when there is an error reading.
         mStream.setInputFileName(file.getAbsolutePath());
     }
@@ -435,6 +433,22 @@ public class BAMFileReader extends SamReader.ReaderImplementation {
             }
         }
 
+        return mIndex;
+    }
+    /**
+     The method is added to support visualization of BAI index files in Integrated Genome Browser.
+     See https://jira.transvar.org/browse/IGBF-1920.
+     getIndexAlt() method is almost same as getIndex() method. !hasIndex() check is removed because empty BAM input(InputStream) is not seekable(mIsSeekable=false)
+     **/
+    public BAMIndex getIndexAlt() {
+        if(mIndex == null) {
+            if (mIndexFile != null)
+                mIndex = mEnableIndexCaching ? new CachingBAMFileIndex(mIndexFile, getFileHeader().getSequenceDictionary(), mEnableIndexMemoryMapping)
+                        : new DiskBasedBAMFileIndex(mIndexFile, getFileHeader().getSequenceDictionary(), mEnableIndexMemoryMapping);
+            else
+                mIndex = mEnableIndexCaching ? new CachingBAMFileIndex(mIndexStream, getFileHeader().getSequenceDictionary())
+                        : new DiskBasedBAMFileIndex(mIndexStream, getFileHeader().getSequenceDictionary());
+        }
         return mIndex;
     }
 

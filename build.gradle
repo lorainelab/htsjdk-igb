@@ -2,6 +2,9 @@ buildscript {
     repositories {
         mavenCentral()
     }
+    dependencies {
+        classpath 'biz.aQute.bnd:biz.aQute.bnd.gradle:4.2.0'
+    }
 }
 
 plugins {
@@ -13,7 +16,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '4.0.4'
     id 'com.github.spotbugs' version "5.0.13"
 }
-
+apply plugin: 'biz.aQute.bnd.builder'
 repositories {
     mavenCentral()
 }
@@ -48,14 +51,8 @@ dependencies {
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-
-final isRelease = Boolean.getBoolean("release")
-final gitVersion = gitVersion().replaceAll(".dirty", "")
-version = isRelease ? gitVersion : gitVersion + "-SNAPSHOT"
-
-logger.info("build for version:" + version)
-group = 'com.github.samtools'
-
+version = "3.0.5"
+group = "htsjdk-igb"
 defaultTasks 'jar'
 
 tasks.withType(JavaCompile) {
@@ -67,11 +64,14 @@ tasks.withType(Javadoc) {
 }
 
 jar {
-    manifest {
-        attributes 'Implementation-Title': 'HTSJDK',
-                'Implementation-Vendor': 'Samtools Organization',
-                'Implementation-Version': archiveVersion
-    }
+    archiveName = 'htsjdk-igb-'+version+".jar"
+    bnd ('Bundle-Name': 'htsjdk for IGB',
+            'Bundle-Vendor': 'Loraine Lab',
+            'Bundle-Description': 'htsjdk for IGB',
+            'Bundle-DocURL': 'https://github.com/lorainelab/htsjdk',
+            'Export-Package': 'htsjdk.*',
+            'Import-Package': '!htsjdk.*,org.apache.commons.*',
+    )
 }
 
 import org.gradle.internal.os.OperatingSystem;
@@ -185,47 +185,28 @@ spotbugsMain {
         html.enabled = true
     }
 }
-
-spotbugsTest {
-    reports {
-        xml.enabled = false
-        html.enabled = true
-    }
+/**
+ *This specifies what artifacts will be built and uploaded when performing a maven upload.
+ */
+artifacts {
+    archives jar
+    archives javadocJar
+    archives sourcesJar
 }
 
 publishing {
     publications {
         htsjdk(MavenPublication) {
             from components.java
-            artifact javadocJar
-            artifact sourcesJar
-
+            artifact javadocJar  // publish the output of the javadocJar task
+            artifact sourcesJar // publish the output of the sourceJar task
+            version = version
+            artifactId = "htsjdk-igb"
+            groupId = "htsjdk-igb"
             pom {
-                name = 'HTSJDK'
-                packaging = 'jar'
-                description = 'A Java API for high-throughput sequencing data (HTS) formats'
-                url = 'https://samtools.github.io/htsjdk/'
-
-                developers {
-                    developer {
-                        id = 'htsjdk'
-                        name = 'Htsjdk Team'
-                        url = 'https://github.com/samtools/htsjdk'
-                    }
-                }
-
-                scm {
-                    url = 'git@github.com:samtools/htsjdk.git'
-                    connection = 'scm:git:git@github.com:samtools/htsjdk.git'
-                }
-
-                licenses {
-                    license {
-                        name = 'MIT License'
-                        url = 'http://opensource.org/licenses/MIT'
-                        distribution = 'repo'
-                    }
-                }
+                name = 'htsjdk-igb'
+                packaging = 'bundle'
+                url = 'https://github.com/lorainelab/htsjdk-igb'
             }
         }
     }
@@ -233,25 +214,12 @@ publishing {
     repositories {
         maven {
             credentials {
-                username = isRelease ? project.findProperty("sonatypeUsername") : System.env.ARTIFACTORY_USERNAME
-                password = isRelease ? project.findProperty("sonatypePassword") : System.env.ARTIFACTORY_PASSWORD
+                username = ""
+                password = ""
             }
-            def release = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-            def snapshot = "https://broadinstitute.jfrog.io/broadinstitute/libs-snapshot-local/"
-            url = isRelease ? release : snapshot
+            url = ""
         }
     }
-}
-
-/**
- * Sign non-snapshot releases with our secret key.  This should never need to be invoked directly.
- */
-signing {
-    required { isRelease && gradle.taskGraph.hasTask("publishHtsjdkPublicationToMavenRepository") }
-    sign publishing.publications.htsjdk
-}
-gradle.taskGraph.beforeTask { Task task ->
-    println "executing $task ..."
 }
 
 task install(dependsOn:publishToMavenLocal)

@@ -118,7 +118,15 @@ class SAMTextReader extends SamReader.ReaderImplementation {
     public BAMIndex getIndex() {
         throw new UnsupportedOperationException();
     }
-
+    /**
+     The method is added to support visualization of BAI index files in Integrated Genome Browser.
+     See https://jira.transvar.org/browse/IGBF-1920.
+     getIndexAlt() method is not supported here. It is added because ReaderImplementation implements PrimitiveSamReader interface.
+     **/
+    @Override
+    public BAMIndex getIndexAlt() {
+        throw new UnsupportedOperationException();
+    }
     @Override
     public void close() {
         if (mReader != null) {
