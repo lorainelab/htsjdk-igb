@@ -193,7 +193,7 @@ artifacts {
     archives javadocJar
     archives sourcesJar
 }
-
+// uploading artifact to maven central has been updated in version 3.0.5
 publishing {
     publications {
         htsjdk(MavenPublication) {
