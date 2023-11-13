@@ -28,4 +28,4 @@ jobs:
       - name: Execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle (Skipping tests..)
-        run: ./gradlew build -x tests
+        run: ./gradlew build -x test
